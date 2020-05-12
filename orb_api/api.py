@@ -259,7 +259,7 @@ class OrbClient(object):
         return self.get_resource_by_id(resource.id)
 
     def get_resource_by_id(self, resource_id, **kwargs):
-        return self.get("resource/{}/".format(resource_id, params=kwargs))
+        return self.get("resource/{}/".format(resource_id))
 
     @sleep_delay
     def add_or_update_resource_image(self, resource_id, image_file):
