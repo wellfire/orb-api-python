@@ -2,19 +2,17 @@
 
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-
-import re
-import warnings
-
 import json
+import re
 import requests
 import time
-import urllib
-import urllib2
+import urllib.error
+import urllib.parse
+import urllib.request
+import warnings
 from functools import wraps
-from poster.encode import multipart_encode
-from poster.streaminghttp import register_openers
+from poster3.encode import multipart_encode
+from poster3.streaminghttp import register_openers
 
 from orb_api import error_codes
 from orb_api.exceptions import OrbApiException
@@ -109,9 +107,9 @@ class OrbClient(object):
         return self.request(GET, path, fullpath, **kwargs)
 
     def search(self, query):
-        req = urllib2.Request(self.base_url + API_PATH + 'resource/search/?q=' + query)
+        req = urllib.request.Request(self.base_url + API_PATH + 'resource/search/?q=' + query)
         req.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
-        resp = urllib2.urlopen(req)
+        resp = urllib.request.urlopen(req)
         data = resp.read()
         return json.loads(data)
 
@@ -123,16 +121,16 @@ class OrbClient(object):
                            'attribution': resource.attribution})
 
         method = POST
-        handler = urllib2.HTTPHandler()
-        opener = urllib2.build_opener(handler)
-        request = urllib2.Request(self.base_url + API_PATH + 'resource/', data=data)
+        handler = urllib.request.HTTPHandler()
+        opener = urllib.request.build_opener(handler)
+        request = urllib.request.Request(self.base_url + API_PATH + 'resource/', data=data)
         request.add_header("Content-Type", 'application/json')
         request.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
         request.get_method = lambda: method
 
         try:
             connection = opener.open(request)
-        except urllib2.HTTPError as e:
+        except urllib.error.HTTPError as e:
             connection = e
 
         resp = connection.read()
@@ -173,16 +171,16 @@ class OrbClient(object):
                            'attribution': resource.attribution})
 
         method = PUT
-        handler = urllib2.HTTPHandler()
-        opener = urllib2.build_opener(handler)
-        request = urllib2.Request(self.base_url + API_PATH + 'resource/' + str(resource.id) + '/', data=data)
+        handler = urllib.request.HTTPHandler()
+        opener = urllib.request.build_opener(handler)
+        request = urllib.request.Request(self.base_url + API_PATH + 'resource/' + str(resource.id) + '/', data=data)
         request.add_header("Content-Type", 'application/json')
         request.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
         request.get_method = lambda: method
 
         try:
             connection = opener.open(request)
-        except urllib2.HTTPError as e:
+        except urllib.error.HTTPError as e:
             connection = e
 
         resp = connection.read()
@@ -233,7 +231,7 @@ class OrbClient(object):
                 for obj in api_data['objects']:
                     yield obj
             except KeyError:
-                print(api_data.keys())
+                print(list(api_data.keys()))
                 print(api_data)
                 raise
 
@@ -267,10 +265,10 @@ class OrbClient(object):
         datagen, headers = multipart_encode({'resource_id': resource_id,
                                              'image_file': open(image_file)})
 
-        request = urllib2.Request(self.base_url + '/api/upload/image/', datagen, headers)
+        request = urllib.request.Request(self.base_url + '/api/upload/image/', datagen, headers)
         request.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
 
-        resp = urllib2.urlopen(request)
+        resp = urllib.request.urlopen(request)
         if resp.code == error_codes.HTML_UNAUTHORIZED:
             raise OrbApiException("Unauthorized", error_codes.HTML_UNAUTHORIZED)
         elif resp.code == error_codes.HTML_BADREQUEST:
@@ -292,10 +290,10 @@ class OrbClient(object):
                                              'description': resource_file.description,
                                              'order_by': resource_file.order_by,
                                              'resource_file': open(resource_file.file)})
-        request = urllib2.Request(self.base_url + '/api/upload/file/', datagen, headers)
+        request = urllib.request.Request(self.base_url + '/api/upload/file/', datagen, headers)
         request.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
 
-        resp = urllib2.urlopen(request)
+        resp = urllib.request.urlopen(request)
 
         if resp.code == error_codes.HTML_UNAUTHORIZED:
             raise OrbApiException("Unauthorized", error_codes.HTML_UNAUTHORIZED)
@@ -313,15 +311,15 @@ class OrbClient(object):
     def delete_resource_files(self, resource_files):
         for f in resource_files:
             method = DELETE
-            handler = urllib2.HTTPHandler()
-            opener = urllib2.build_opener(handler)
-            request = urllib2.Request(self.base_url + f['resource_uri'])
+            handler = urllib.request.HTTPHandler()
+            opener = urllib.request.build_opener(handler)
+            request = urllib.request.Request(self.base_url + f['resource_uri'])
             request.add_header("Content-Type", 'application/json')
             request.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
             request.get_method = lambda: method
             try:
                 connection = opener.open(request)
-            except urllib2.HTTPError as e:
+            except urllib.error.HTTPError as e:
                 connection = e
 
             resp = connection.read()
@@ -352,16 +350,16 @@ class OrbClient(object):
                            'resource_id': resource_id, })
 
         method = POST
-        handler = urllib2.HTTPHandler()
-        opener = urllib2.build_opener(handler)
-        request = urllib2.Request(self.base_url + API_PATH + 'resourceurl/', data=data)
+        handler = urllib.request.HTTPHandler()
+        opener = urllib.request.build_opener(handler)
+        request = urllib.request.Request(self.base_url + API_PATH + 'resourceurl/', data=data)
         request.add_header("Content-Type", 'application/json')
         request.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
         request.get_method = lambda: method
 
         try:
             connection = opener.open(request)
-        except urllib2.HTTPError as e:
+        except urllib.error.HTTPError as e:
             connection = e
 
         resp = connection.read()
@@ -392,15 +390,15 @@ class OrbClient(object):
     def delete_resource_urls(self, resource_urls):
         for f in resource_urls:
             method = DELETE
-            handler = urllib2.HTTPHandler()
-            opener = urllib2.build_opener(handler)
-            request = urllib2.Request(self.base_url + f['resource_uri'])
+            handler = urllib.request.HTTPHandler()
+            opener = urllib.request.build_opener(handler)
+            request = urllib.request.Request(self.base_url + f['resource_uri'])
             request.add_header("Content-Type", 'application/json')
             request.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
             request.get_method = lambda: method
             try:
                 connection = opener.open(request)
-            except urllib2.HTTPError as e:
+            except urllib.error.HTTPError as e:
                 connection = e
 
             resp = connection.read()
@@ -432,13 +430,13 @@ class OrbClient(object):
         # find the tag id
         tag_name_obj = {"name": tag_name}
 
-        url = self.base_url + API_PATH + 'tag/?' + urllib.urlencode(tag_name_obj)
+        url = self.base_url + API_PATH + 'tag/?' + urllib.parse.urlencode(tag_name_obj)
         print(url)
-        req = urllib2.Request(url)
+        req = urllib.request.Request(url)
         req.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
         req.add_header('Accept', 'application/json')
 
-        connection = urllib2.urlopen(req)
+        connection = urllib.request.urlopen(req)
 
         resp = connection.read()
 
@@ -463,15 +461,15 @@ class OrbClient(object):
     def delete_resource_tags(self, resource_tags):
         for rt in resource_tags:
             method = DELETE
-            handler = urllib2.HTTPHandler()
-            opener = urllib2.build_opener(handler)
-            request = urllib2.Request(self.base_url + rt['resource_uri'])
+            handler = urllib.request.HTTPHandler()
+            opener = urllib.request.build_opener(handler)
+            request = urllib.request.Request(self.base_url + rt['resource_uri'])
             request.add_header("Content-Type", 'application/json')
             request.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
             request.get_method = lambda: method
             try:
                 connection = opener.open(request)
-            except urllib2.HTTPError as e:
+            except urllib.error.HTTPError as e:
                 connection = e
 
             resp = connection.read()
@@ -493,16 +491,16 @@ class OrbClient(object):
         data = json.dumps({'name': tag_name})
 
         method = POST
-        handler = urllib2.HTTPHandler()
-        opener = urllib2.build_opener(handler)
-        request = urllib2.Request(self.base_url + API_PATH + 'tag/', data=data)
+        handler = urllib.request.HTTPHandler()
+        opener = urllib.request.build_opener(handler)
+        request = urllib.request.Request(self.base_url + API_PATH + 'tag/', data=data)
         request.add_header("Content-Type", 'application/json')
         request.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
         request.get_method = lambda: method
 
         try:
             connection = opener.open(request)
-        except urllib2.HTTPError as e:
+        except urllib.error.HTTPError as e:
             connection = e
 
         resp = connection.read()
@@ -529,15 +527,15 @@ class OrbClient(object):
 
         data = json.dumps({'resource_id': resource_id, 'tag_id': tag_id})
         method = POST
-        handler = urllib2.HTTPHandler()
-        opener = urllib2.build_opener(handler)
-        request = urllib2.Request(self.base_url + API_PATH + 'resourcetag/', data=data)
+        handler = urllib.request.HTTPHandler()
+        opener = urllib.request.build_opener(handler)
+        request = urllib.request.Request(self.base_url + API_PATH + 'resourcetag/', data=data)
         request.add_header("Content-Type", 'application/json')
         request.add_header('Authorization', 'ApiKey ' + self.user_name + ":" + self.api_key)
         request.get_method = lambda: method
         try:
             connection = opener.open(request)
-        except urllib2.HTTPError as e:
+        except urllib.error.HTTPError as e:
             connection = e
 
         if connection.code == error_codes.HTML_UNAUTHORIZED:

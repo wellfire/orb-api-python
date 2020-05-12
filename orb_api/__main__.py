@@ -29,7 +29,7 @@ def main():
         print("There are {} total resources returned.\n".format(count))
 
         for obj in results:
-            print(u"{}\n{}\n".format(obj['title'], obj['url']))
+            print("{}\n{}\n".format(obj['title'], obj['url']))
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'requests>=2.0.0',
-        'poster==0.8.1',
+        'poster3==0.8.1',
     ],
     entry_points={
         'console_scripts': [
@@ -32,8 +32,6 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GPLv3 License',  # provisional
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Topic :: Internet :: WWW/HTTP',

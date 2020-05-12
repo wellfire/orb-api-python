@@ -5,7 +5,7 @@ Tests for the client
 from copy import deepcopy
 from datetime import date
 
-import mock
+from unittest import mock
 
 from orb_api.api import OrbClient
 
