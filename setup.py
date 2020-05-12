@@ -19,7 +19,9 @@ setup(
     include_package_data=True,
     install_requires=[
         'requests>=2.0.0',
-        'poster3==0.8.1',
+        'poster3==0.8.1;python_version>"3.0"',
+        'poster==0.8.1;python_version<"3.0"',
+        'six>=1.12.0',
     ],
     entry_points={
         'console_scripts': [

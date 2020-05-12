@@ -6,13 +6,16 @@ import json
 import re
 import requests
 import time
-import urllib.error
-import urllib.parse
-import urllib.request
 import warnings
 from functools import wraps
-from poster3.encode import multipart_encode
-from poster3.streaminghttp import register_openers
+from six.moves import urllib
+
+try:
+    from poster3.encode import multipart_encode
+    from poster3.streaminghttp import register_openers
+except ImportError:
+    from poster.encode import multipart_encode
+    from poster.streaminghttp import register_openers
 
 from orb_api import error_codes
 from orb_api.exceptions import OrbApiException
