@@ -425,7 +425,7 @@ class OrbClient(object):
         if self.verbose_output:
             print("adding tag: " + tag_name.strip())
 
-        regex = re.compile('[,\.!?"\']')
+        regex = re.compile(r'[,\.!?"\']')
         if regex.sub('', tag_name.strip()) == '':
             return
 
